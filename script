@@ -1,0 +1,54 @@
+import requests
+import json
+import time
+import tkinter as tk
+
+# Define the target Instagram account
+target_username = ""
+
+# Define the list of reporters
+reporters = []
+
+# Create the tkinter window
+window = tk.Tk()
+window.title("Instagram Reporter")
+
+# Create the username entry field
+username_entry = tk.Entry(window)
+username_entry.pack()
+
+# Create the report button
+report_button = tk.Button(window, text="Report", command=report)
+report_button.pack()
+
+# Define the report function
+def report():
+   # Get the username from the entry field
+   global target_username
+   target_username = username_entry.get()
+
+   # Iterate over the list of reporters
+   for reporter in reporters:
+       # Build the report payload
+       payload = {
+           "username": reporter,
+           "target_username": target_username,
+           "reason": "Spam"
+       }
+
+       # Send the report request
+       response = requests.post("https://www.instagram.com/users/report/", data=payload)
+
+       # Check the response status code
+       if response.status_code == 200:
+           # The report was successful
+           print("Report successful for:", reporter)
+       else:
+           # The report failed
+           print("Report failed for:", reporter)
+
+       # Sleep for 1 second to avoid being rate limited
+       time.sleep(1)
+
+# Start the tkinter main loop
+window.mainloop()
